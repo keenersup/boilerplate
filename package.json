@@ -1,0 +1,12 @@
+{
+  "name": "boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "CLIENT_PORT=3000 SERVER_APOLLO_PORT=6060 docker-compose -f docker-compose.dev.yml build",
+    "dev": "CLIENT_PORT=3000 SERVER_APOLLO_PORT=6060 docker-compose -f docker-compose.dev.yml up"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

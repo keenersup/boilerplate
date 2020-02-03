@@ -1,0 +1,65 @@
+{
+  "name": "client-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@apollo/react-hooks": "^3.1.3",
+    "@material-ui/core": "^4.8.3",
+    "@material-ui/icons": "^4.5.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link": "^1.2.13",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-error": "^1.1.12",
+    "apollo-link-http": "^1.5.16",
+    "clsx": "^1.0.4",
+    "fingerprintjs2": "^2.1.0",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
+    "history": "^4.10.1",
+    "jwt-decode": "^2.2.0",
+    "moment": "^2.24.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-hook-form": "^4.5.6",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.3.0",
+    "typescript": "~3.7.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/fingerprintjs2": "^2.0.0",
+    "@types/graphql": "^14.5.0",
+    "@types/history": "^4.7.4",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/moment": "^2.13.0",
+    "@types/react-router-dom": "^5.1.3"
+  }
+}

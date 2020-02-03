@@ -1,0 +1,121 @@
+version: "3.7"
+services:
+  proxy-nginx-dev:
+    image: nginx:alpine
+    container_name: proxy-nginx-dev
+    volumes:
+      - ./proxy-nginx/conf/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - client-react-dev
+    environment:
+      - CLIENT_PORT=${CLIENT_PORT}
+      - SERVER_APOLLO_PORT=${SERVER_APOLLO_PORT}
+    ports:
+      - 80:80
+    networks:
+      - frontend
+      - backend
+    command: /bin/sh -c "envsubst \"`env | awk -F = '{printf \" $$%s\", $$1}'`\" < /etc/nginx/conf.d/dev.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
+  client-react-dev:
+    image: client-react:dev
+    container_name: client-react-dev
+    build:
+      context: ./client-react
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        - REACT_APP_CLIENT_ORIGIN=http://localhost/graphql
+        - REACT_APP_SERVER_HOST=http://localhost
+    volumes:
+      - ./client-react:/app
+    ports:
+      - ${CLIENT_PORT}:${CLIENT_PORT}
+    depends_on:
+      - server-apollo-dev
+    networks:
+      - frontend
+
+  server-apollo-dev:
+    image: server-apollo:dev
+    init: true
+    container_name: server-apollo-dev
+    build:
+      context: ./server-apollo
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGODB_DATABASE=database
+      - MONGODB_USERNAME=username
+      - MONGODB_PASSWORD=password
+      - SECRET_KEY=secret_key
+      - REFRESH_SECRET_KEY=refresh_secret_key
+      - ACCESSTOKEN_EXPIRED=30m
+      - REFRESHTOKEN_EXPIRED=1d
+
+      - CLIENT_SERVER_URL=http://localhost
+      - SERVER_HOST=http://localhost
+      - SERVER_PORT=${SERVER_APOLLO_PORT}
+      - GRAPHQL_PATH=graphql
+    volumes:
+      - ./server-apollo:/app
+    ports:
+      - ${SERVER_APOLLO_PORT}:${SERVER_APOLLO_PORT}
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+  mongodb:
+    user: $UID
+    # export UID
+    # export -p | grep UID
+    container_name: mongodb
+    image: mongo
+    ports:
+      - 27017
+    volumes:
+      - mongodb:/data/db
+      - ./db-mongo/db-init/:/docker-entrypoint-initdb.d
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=database
+      - MONGO_INITDB_USERNAME=username
+      - MONGO_INITDB_PASSWORD=password
+    networks:
+      - backend
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_OPTIONS_EDITORTHEME=ambiance
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_BASICAUTH_USERNAME=username
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+#  redis:
+#    image: redis:alpine
+#    ports:
+#      - 6379
+#    command: ['--requirepass "secret"']
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  mongodb:
